@@ -74,6 +74,8 @@ By default Jenkins server uses TCP port 8080 - open it by creating a new Inbound
 
 - Save the configuration and let us try to run the build. For now we can only do it manually. Click “Build Now” button, if you have configured everything correctly, the build will be successfull and you will see it under #1
 
+![](https://github.com/Arafly/DevOps_Tooling_Jenkins/blob/master/assets/build.PNG)
+
 - But this build does not produce anything and it runs only when we trigger it manually. Let us fix it.
 
 - Click “Configure” your job/project and add these two configurations
@@ -81,7 +83,7 @@ Configure triggering the job from GitHub webhook:
 
 - Configure “Post-build Actions” to archive all the files - files resulted from a build are called “artifacts”
 
-*image build process
+![](https://github.com/Arafly/DevOps_Tooling_Jenkins/blob/master/assets/Build%20process.PNG)
 
 
 Now, go ahead and make some change in any file in your GitHub repository (e.g. README.MD file) and push the changes to the master branch.

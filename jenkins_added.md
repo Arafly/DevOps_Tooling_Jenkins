@@ -212,4 +212,58 @@ Jenkinsfile  apache-config.conf  start-apache
 ```
 
 ##  Configure Jenkins to copy files to NFS server via SSH
+
 Now we have our artifacts saved locally on Jenkins server, the next step is to copy them to our NFS server to /mnt/apps directory.
+
+- We'll need to install a plugin on Jenkins, called “Publish Over SSH”.
+- Next is to configure the job to copy artifacts over to NFS server.
+
+Scroll down to Publish over SSH plugin configuration section and configure it to be able to connect to your NFS server:
+
+- Provide a private key that you use to connect to your NFS server(Generate one if need be, but make sure it's in pem format. The Jenkins plugin won't accept anything else)
+
+- Hostname - can be private IP address of your NFS server (or public, depending on your Cloud Provider)
+
+- Remote directory - /mnt/apps since our Web Servers use it as a mount point to retrieve files from the NFS server
+
+- Test the configuration and make sure the connection returns Success. Remember, that TCP port 22 on NFS server must be open to receive SSH connections.
+
+*image pemkey
+
+- Save the configuration, open your Jenkins job configuration page and add another one “Post-build Action”. This time around picking "Send build artifacts over SSH"
+
+> Configure it to send all files produced by the build into our previously defined remote directory i.e /mnt/apps . In our case we want to copy all files and directories - so we use **.
+
+- Save this configuration and go ahead, change something in README.MD file in your GitHub Tooling repository.
+
+Webhook will trigger a new job and in the “Console Output” of the job you will find something like this:
+
+*image final
+
+> Gotcha! The first time you build the job after adding the second Post Build Action, you'd get a failure, like this:
+
+*image failure
+
+The reason is because of the file permission still existing on the /mnt/apps directory, which is "nobody". For the build to be successful, you have to change the permission to the user used in generating your SSH key(which in my case is "araflyayinde").
+
+`$ sudo chown -R araflyayinde: /mnt/apps`
+
+To ensure that the files in /mnt/apps have been successfully updated - SSH into your NFS server and check README.MD file, by running:
+
+`cat /mnt/apps/README.md`
+
+```
+Output:
+
+$ cat /mnt/apps/README.md
+[![nginx 1.17.2](https://img.shields.io/badge/nginx-1.17.2-brightgreen.svg?&logo=nginx&logoColor=
+white&style=for-the-badge)](https://nginx.org/en/CHANGES) [![php 7.3.8](https://img.shields.io/ba
+dge/php--fpm-7.3.8-blue.svg?&logo=php&logoColor=white&style=for-the-badge)](https://secure.php.ne
+t/releases/7_3_8.php)
+## Introduction
+This is a Dockerfile to build a debian based container image running nginx and php-fpm 7.3.......
+```
+
+If you see the changes you had previously made in your GitHub - the job works as expected.
+
+## **Congratulations!**

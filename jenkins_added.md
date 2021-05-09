@@ -228,7 +228,7 @@ Scroll down to Publish over SSH plugin configuration section and configure it to
 
 - Test the configuration and make sure the connection returns Success. Remember, that TCP port 22 on NFS server must be open to receive SSH connections.
 
-*image pemkey
+![](https://github.com/Arafly/DevOps_Tooling_Jenkins/blob/master/assets/pemkey.PNG)
 
 - Save the configuration, open your Jenkins job configuration page and add another one “Post-build Action”. This time around picking "Send build artifacts over SSH"
 
@@ -238,11 +238,11 @@ Scroll down to Publish over SSH plugin configuration section and configure it to
 
 Webhook will trigger a new job and in the “Console Output” of the job you will find something like this:
 
-*image final
+![](https://github.com/Arafly/DevOps_Tooling_Jenkins/blob/master/assets/final.PNG)
 
 > Gotcha! The first time you build the job after adding the second Post Build Action, you'd get a failure, like this:
 
-*image failure
+![](https://github.com/Arafly/DevOps_Tooling_Jenkins/blob/master/assets/failure.PNG)
 
 The reason is because of the file permission still existing on the /mnt/apps directory, which is "nobody". For the build to be successful, you have to change the permission to the user used in generating your SSH key(which in my case is "araflyayinde").
 
@@ -263,7 +263,5 @@ t/releases/7_3_8.php)
 ## Introduction
 This is a Dockerfile to build a debian based container image running nginx and php-fpm 7.3.......
 ```
-
-If you see the changes you had previously made in your GitHub - the job works as expected.
 
 ## **Congratulations!**
